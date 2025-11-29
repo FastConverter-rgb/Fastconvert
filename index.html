@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>Fast Converter - MP4 to MP3 Video to Audio Converter</title>
+  <meta name="description" content="Fast Converter - Convert MP4 videos to MP3 audio files instantly. Fast, free, and easy-to-use online converter with drag-and-drop support." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --background: #ffffff;
+      --foreground: #171717;
+      --muted-foreground: #737373;
+      --border: #e5e5e5;
+      --primary: #171717;
+      --primary-foreground: #fafafa;
+      --card: #fafafa;
+      --card-border: #f0f0f0;
+    }
+    
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: var(--background);
+      color: var(--foreground);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid var(--border);
+      background-color: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+    }
+    
+    .header-content {
+      display: flex;
+      height: 64px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .logo img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
+    
+    .logo h1 {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+    }
+    
+    /* Main */
+    main {
+      flex: 1;
+      padding: 24px 24px;
+    }
+    
+    @media (min-width: 768px) {
+      main {
+        padding: 40px 24px;
+      }
+    }
+    
+    .main-content {
+      max-width: 896px;
+      margin: 0 auto;
+    }
+    
+    /* Hero */
+    .hero {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    
+    .hero-brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    
+    .hero-logo {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+    }
+    
+    @media (min-width: 768px) {
+      .hero-logo {
+        width: 112px;
+        height: 112px;
+      }
+    }
+    
+    .hero-brand-name {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+    
+    @media (min-width: 768px) {
+      .hero-brand-name {
+        font-size: 24px;
+      }
+    }
+    
+    .hero h1 {
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      margin-bottom: 8px;
+    }
+    
+    @media (min-width: 768px) {
+      .hero h1 {
+        font-size: 48px;
+      }
+    }
+    
+    .hero p {
+      font-size: 16px;
+      color: var(--muted-foreground);
+      max-width: 672px;
+      margin: 0 auto;
+    }
+    
+    @media (min-width: 768px) {
+      .hero p {
+        font-size: 18px;
+      }
+    }
+    
+    /* Upload Zone */
+    .upload-zone {
+      width: 100%;
+      max-width: 672px;
+      margin: 0 auto;
+    }
+    
+    .upload-area {
+      min-height: 256px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      border: 4px dashed var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    @media (min-width: 768px) {
+      .upload-area {
+        min-height: 288px;
+      }
+    }
+    
+    .upload-area:hover {
+      border-color: var(--foreground);
+      background-color: var(--card);
+    }
+    
+    .upload-area.dragging {
+      border-color: var(--foreground);
+      background-color: var(--card);
+    }
+    
+    .upload-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .upload-icon {
+      width: 48px;
+      height: 48px;
+      color: var(--muted-foreground);
+      transition: transform 0.2s ease;
+    }
+    
+    .upload-area:hover .upload-icon,
+    .upload-area.dragging .upload-icon {
+      transform: scale(1.1);
+      color: var(--foreground);
+    }
+    
+    .upload-text {
+      text-align: center;
+    }
+    
+    .upload-text h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    
+    @media (min-width: 768px) {
+      .upload-text h2 {
+        font-size: 30px;
+      }
+    }
+    
+    .upload-text p {
+      font-size: 16px;
+      color: var(--muted-foreground);
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      color: var(--primary-foreground);
+    }
+    
+    .btn-primary:hover {
+      opacity: 0.9;
+    }
+    
+    .btn-outline {
+      background-color: transparent;
+      color: var(--foreground);
+      border: 1px solid var(--border);
+    }
+    
+    .btn-outline:hover {
+      background-color: var(--card);
+    }
+    
+    .format-text {
+      font-size: 14px;
+      color: var(--muted-foreground);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    #file-input {
+      display: none;
+    }
+    
+    /* File Info Card */
+    .file-info {
+      display: none;
+      width: 100%;
+      max-width: 672px;
+      margin: 0 auto 24px;
+      background-color: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 24px;
+    }
+    
+    .file-info.visible {
+      display: block;
+    }
+    
+    .file-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    
+    .file-row:last-child {
+      margin-bottom: 0;
+    }
+    
+    .file-row svg {
+      width: 20px;
+      height: 20px;
+      color: var(--muted-foreground);
+      flex-shrink: 0;
+    }
+    
+    .file-row .label {
+      font-size: 14px;
+      color: var(--muted-foreground);
+    }
+    
+    .file-row .value {
+      font-size: 14px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .file-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    
+    /* Progress */
+    .progress-container {
+      display: none;
+      width: 100%;
+      max-width: 672px;
+      margin: 0 auto 24px;
+    }
+    
+    .progress-container.visible {
+      display: block;
+    }
+    
+    .progress-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    
+    .progress-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border);
+      border-top-color: var(--foreground);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .progress-percent {
+      font-size: 14px;
+      font-weight: 500;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      background-color: var(--card);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background-color: var(--primary);
+      border-radius: 6px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+    
+    /* Download Section */
+    .download-section {
+      display: none;
+      width: 100%;
+      max-width: 672px;
+      margin: 0 auto;
+    }
+    
+    .download-section.visible {
+      display: block;
+    }
+    
+    .success-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      background-color: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .success-icon svg {
+      width: 32px;
+      height: 32px;
+      color: var(--primary-foreground);
+    }
+    
+    .success-header h2 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+    
+    .download-card {
+      background-color: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    
+    .download-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      justify-content: center;
+    }
+    
+    @media (min-width: 640px) {
+      .download-buttons {
+        flex-direction: row;
+      }
+    }
+    
+    .download-buttons .btn {
+      flex: 1;
+    }
+    
+    @media (min-width: 640px) {
+      .download-buttons .btn {
+        flex: initial;
+      }
+    }
+    
+    .btn svg {
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+    }
+    
+    /* How It Works */
+    .how-it-works {
+      padding-top: 48px;
+    }
+    
+    .how-it-works h2 {
+      font-size: 24px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    
+    @media (min-width: 768px) {
+      .how-it-works h2 {
+        font-size: 30px;
+      }
+    }
+    
+    .steps {
+      display: grid;
+      gap: 32px;
+    }
+    
+    @media (min-width: 768px) {
+      .steps {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    .step {
+      text-align: center;
+    }
+    
+    .step-number {
+      width: 48px;
+      height: 48px;
+      background-color: var(--primary);
+      color: var(--primary-foreground);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0 auto 12px;
+    }
+    
+    .step h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .step p {
+      font-size: 14px;
+      color: var(--muted-foreground);
+    }
+    
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+      text-align: center;
+    }
+    
+    footer p {
+      font-size: 14px;
+      color: var(--muted-foreground);
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23171717'/%3E%3Cpolygon points='40,30 40,70 70,50' fill='%23fafafa'/%3E%3Crect x='25' y='45' width='8' height='20' rx='2' fill='%23fafafa'/%3E%3Crect x='15' y='50' width='6' height='10' rx='2' fill='%23fafafa'/%3E%3C/svg%3E" alt="Fast Converter Logo">
+          <h1>Fast Converter</h1>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <div class="container">
+      <div class="main-content">
+        <!-- Hero Section -->
+        <div class="hero">
+          <div class="hero-brand">
+            <img class="hero-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23171717'/%3E%3Cpolygon points='40,30 40,70 70,50' fill='%23fafafa'/%3E%3Crect x='25' y='45' width='8' height='20' rx='2' fill='%23fafafa'/%3E%3Crect x='15' y='50' width='6' height='10' rx='2' fill='%23fafafa'/%3E%3C/svg%3E" alt="Fast Converter Logo">
+            <span class="hero-brand-name">Fast Converter</span>
+          </div>
+          <h1>Convert MP4 to MP3</h1>
+          <p>Transform your videos into audio files instantly. Fast, simple, and 100% free.</p>
+        </div>
+
+        <!-- Upload Zone -->
+        <div class="upload-zone" id="upload-zone">
+          <div class="upload-area" id="upload-area">
+            <div class="upload-content">
+              <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              <div class="upload-text">
+                <h2>Drop your MP4 file here</h2>
+                <p>or click to browse your files</p>
+              </div>
+              <button class="btn btn-primary" id="choose-btn">Choose File</button>
+            </div>
+            <input type="file" id="file-input" accept="video/mp4">
+            <p class="format-text">Supported format: MP4</p>
+          </div>
+        </div>
+
+        <!-- File Info -->
+        <div class="file-info" id="file-info">
+          <div class="file-row">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m16 6 4 14"/>
+              <path d="M12 6v14"/>
+              <path d="M8 8v12"/>
+              <path d="M4 4v16"/>
+            </svg>
+            <div>
+              <p class="label">Filename</p>
+              <p class="value" id="file-name">-</p>
+            </div>
+          </div>
+          <div class="file-grid">
+            <div class="file-row">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                <path d="M3 5V19A9 3 0 0 0 21 19V5"/>
+                <path d="M3 12A9 3 0 0 0 21 12"/>
+              </svg>
+              <div>
+                <p class="label">Size</p>
+                <p class="value" id="file-size">-</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-container" id="progress-container">
+          <div class="progress-header">
+            <div class="progress-status">
+              <div class="spinner" id="spinner"></div>
+              <span id="status-text">Uploading...</span>
+            </div>
+            <span class="progress-percent" id="progress-percent">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </div>
+
+        <!-- Download Section -->
+        <div class="download-section" id="download-section">
+          <div class="success-header">
+            <div class="success-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </div>
+            <h2>Conversion Complete!</h2>
+          </div>
+          <div class="download-card">
+            <div class="file-row">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18V5l12-2v13"/>
+                <circle cx="6" cy="18" r="3"/>
+                <circle cx="18" cy="16" r="3"/>
+              </svg>
+              <div>
+                <p class="label">Converted File</p>
+                <p class="value" id="mp3-name">-</p>
+              </div>
+            </div>
+            <div class="file-row">
+              <div style="width:20px"></div>
+              <div>
+                <p class="label">Size</p>
+                <p class="value" id="mp3-size">-</p>
+              </div>
+            </div>
+          </div>
+          <div class="download-buttons">
+            <button class="btn btn-primary" id="download-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Download MP3
+            </button>
+            <button class="btn btn-outline" id="reset-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                <path d="M3 3v5h5"/>
+              </svg>
+              Convert Another
+            </button>
+          </div>
+        </div>
+
+        <!-- How It Works -->
+        <div class="how-it-works" id="how-it-works">
+          <h2>How It Works</h2>
+          <div class="steps">
+            <div class="step">
+              <div class="step-number">1</div>
+              <h3>Upload Video</h3>
+              <p>Drag and drop your MP4 file or click to browse</p>
+            </div>
+            <div class="step">
+              <div class="step-number">2</div>
+              <h3>Auto Convert</h3>
+              <p>We automatically convert your video to MP3 format</p>
+            </div>
+            <div class="step">
+              <div class="step-number">3</div>
+              <h3>Download</h3>
+              <p>Download your converted MP3 file instantly</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>Fast and secure video to audio conversion</p>
+    </div>
+  </footer>
+
+  <script>
+    const uploadArea = document.getElementById('upload-area');
+    const uploadZone = document.getElementById('upload-zone');
+    const fileInput = document.getElementById('file-input');
+    const chooseBtn = document.getElementById('choose-btn');
+    const fileInfo = document.getElementById('file-info');
+    const fileName = document.getElementById('file-name');
+    const fileSize = document.getElementById('file-size');
+    const progressContainer = document.getElementById('progress-container');
+    const progressFill = document.getElementById('progress-fill');
+    const progressPercent = document.getElementById('progress-percent');
+    const statusText = document.getElementById('status-text');
+    const spinner = document.getElementById('spinner');
+    const downloadSection = document.getElementById('download-section');
+    const mp3Name = document.getElementById('mp3-name');
+    const mp3Size = document.getElementById('mp3-size');
+    const downloadBtn = document.getElementById('download-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    const howItWorks = document.getElementById('how-it-works');
+
+    let selectedFile = null;
+
+    function formatFileSize(bytes) {
+      const mb = bytes / (1024 * 1024);
+      return mb.toFixed(1) + ' MB';
+    }
+
+    function handleFile(file) {
+      if (file && file.type === 'video/mp4') {
+        selectedFile = file;
+        uploadZone.style.display = 'none';
+        howItWorks.style.display = 'none';
+        fileInfo.classList.add('visible');
+        fileName.textContent = file.name;
+        fileSize.textContent = formatFileSize(file.size);
+        startConversion();
+      }
+    }
+
+    function startConversion() {
+      progressContainer.classList.add('visible');
+      let progress = 0;
+
+      const uploadInterval = setInterval(() => {
+        progress += 10;
+        progressFill.style.width = progress + '%';
+        progressPercent.textContent = progress + '%';
+
+        if (progress >= 50) {
+          statusText.textContent = 'Converting to MP3...';
+        }
+
+        if (progress >= 100) {
+          clearInterval(uploadInterval);
+          spinner.style.display = 'none';
+          statusText.textContent = 'Complete!';
+          setTimeout(showDownload, 500);
+        }
+      }, 300);
+    }
+
+    function showDownload() {
+      progressContainer.classList.remove('visible');
+      fileInfo.classList.remove('visible');
+      downloadSection.classList.add('visible');
+      mp3Name.textContent = selectedFile.name.replace('.mp4', '.mp3');
+      mp3Size.textContent = formatFileSize(selectedFile.size * 0.13);
+    }
+
+    function reset() {
+      uploadZone.style.display = 'block';
+      howItWorks.style.display = 'block';
+      fileInfo.classList.remove('visible');
+      progressContainer.classList.remove('visible');
+      downloadSection.classList.remove('visible');
+      progressFill.style.width = '0%';
+      progressPercent.textContent = '0%';
+      statusText.textContent = 'Uploading...';
+      spinner.style.display = 'block';
+      selectedFile = null;
+      fileInput.value = '';
+    }
+
+    uploadArea.addEventListener('click', () => fileInput.click());
+    chooseBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files[0]) handleFile(e.target.files[0]);
+    });
+
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.classList.add('dragging');
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+      uploadArea.classList.remove('dragging');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('dragging');
+      if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      console.log('Download:', selectedFile.name.replace('.mp4', '.mp3'));
+      alert('In a real implementation, this would download your MP3 file.');
+    });
+
+    resetBtn.addEventListener('click', reset);
+  </script>
+</body>
+</html>
